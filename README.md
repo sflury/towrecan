@@ -11,7 +11,6 @@ In the case of the explicity orthogonal distance method, if no model is provided
 from numpy.random import rand, randn, seed
 from towrecen import *
 seed(123)
-import sys,os
 # Nicholls+ 2017 N/O vs O/H scaling relation
 f = lambda x: log10(10**-1.732+10**((x-12)+2.19))
 # generate fake data
