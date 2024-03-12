@@ -21,17 +21,24 @@ y  = f(x) + randn(len(x))*0.25
 xe = 0.05*rand(len(x))+0.05
 ye = 0.05*rand(len(x))+0.05
 # instantiate towrecen
-disp = towrecen(x,y,fun=f)
-# plot data to illustrate scatter
+disp = towrecen(x,y,fun=f,xerr=xe,yerr=ye)
+# plot data to illustrate scatter and
+# minimized Euclidean distances
+disp.plotDistOrtho()
+```
+<img width="400" alt="image" src="https://github.com/sflury/towrecen/assets/42982705/aeb72b15-0956-48ed-8fc8-83e258bf23f0">
+
+```
+# compare dispersion measurements via Euclidean distance minimization and PCA
 disp.plotDistCompare()
 ```
-<img width="583" alt="image" src="https://github.com/sflury/towrecen/assets/42982705/14677bf2-8064-4984-aee0-defbc1254887">
+<img width="400" alt="image" src="https://github.com/sflury/towrecen/assets/42982705/14677bf2-8064-4984-aee0-defbc1254887">
 
 ## Whence the Name `towrecen`
 I studied Old, Middle, and Early Modern English in college, both from a linguistic angle and from a literary one. I wanted to reconnect to those scholastic roots. The name `towrecen` is an Old English word meaning 'to scatter' or 'to disperse'. The word contains connotations of sowing fields. I often picture data as having been scattered in such a way, with the Universe casting galactic seeds to be nurtured through gas accretion and the subtle laws of physics. Ours is to determine whether the dispersion is physical (like the mass-metallicity relation) and if so, why.
 
 ## Citing `towrecen`
-This code has its origins in my Master's thesis; however, it first appeared in 
+The `towrecen` code has its origins in my Master's thesis; however, it first appeared "publicly" in the publication below. As of now, please cite this paper when utilizing `towrecen`.
 
 ``` bibtex
 @ARTICLE{AuthorYear,
