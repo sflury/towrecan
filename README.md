@@ -11,17 +11,21 @@ In the case of the explicity orthogonal distance method, if no model is provided
 from numpy.random import rand, randn, seed
 from towrecen import *
 seed(123)
-# Nicholls+ 2017 N/O vs O/H scaling relation
+import sys,os
+# function for orthogonal distance
+# here using Nicholls+ 2017
 f = lambda x: log10(10**-1.732+10**((x-12)+2.19))
 # generate fake data
-x  = 1.5*rand(5)+7.5
-y  = 1.5*rand(5)-1.75
+x  = 1.5*rand(50)+7.5
+y  = f(x) + randn(len(x))*0.25
+xe = 0.05*rand(len(x))+0.05
+ye = 0.05*rand(len(x))+0.05
 # instantiate towrecen
 disp = towrecen(x,y,fun=f)
 # plot data to illustrate scatter
-disp.pplot()
+disp.plotDistCompare()
 ```
-<img width="412" alt="image" src="https://github.com/sflury/towrecen/assets/42982705/13888594-265c-40be-a390-1b2a22c8be3b">
+<img width="583" alt="image" src="https://github.com/sflury/towrecen/assets/42982705/14677bf2-8064-4984-aee0-defbc1254887">
 
 ## Whence the Name `towrecen`
 I studied Old, Middle, and Early Modern English in college, both from a linguistic angle and from a literary one. I wanted to reconnect to those scholastic roots. The name `towrecen` is an Old English word meaning 'to scatter' or 'to disperse'. The word contains connotations of sowing fields. I often picture data as having been scattered in such a way, with the Universe casting galactic seeds to be nurtured through gas accretion and the subtle laws of physics. Ours is to determine whether the dispersion is physical (like the mass-metallicity relation) and if so, why.
