@@ -1,7 +1,7 @@
 from numpy.linalg import det, eig, inv, pinv
 from numpy.random import rand, randn, seed
 from numpy import any, argsort, array, diag, diff, linspace, log10, min, max, \
-                  nanmean, ones, real, sign, sqrt, quantile
+                  nanmean, ones, real, sign, sqrt, quantile, zeros
 from scipy.optimize import fminbound, newton
 import matplotlib.pyplot as plt
 plt.ioff()
@@ -55,34 +55,45 @@ class towrecen(object):
             if not provided, the Demming regression on `x` and `y`;
             divergent color-coding by Euclidean orthogonal distance
     '''
-    def __init__(self,x,y,fun=None,xerr=None,yerr=None):
+    def __init__(self,x,y,fun=None,xerr=None,yerr=None,nSamp=None):
+        # store data
         self.x  = array(x)
         self.y  = array(y)
         self.xe = array(xerr)
         self.ye = array(yerr)
-        self.PCA()
+        # check sampling for uncertainties
+        if nSamp == None:
+            self.nSamp = 1000
+        else:
+            self.nSamp = nSamp
+        # set up design matrix
+        # design matrix is simply x and y data
+        self.Z = array([self.x,self.y]).T
+        # find and subtract data means
+        self.Zbar = nanmean(self.Z,axis=0)
+        self.Z -= self.Zbar
+        # call regression functions
         self.RegressLeastSquares()
         self.RegressDemming()
+        # calculate PCA distances
+        self.PCA()
         if fun == None:
             self.usrfun = False
             self.fun = self.Demming
         else:
             self.usrfun = True
             self.fun = fun
+        # calculate orthogonal Euclidean distances
         self.OrthoDist()
+        # compare the two distances
         self.DistCompare()
 
-    def PCA(self,nSamp=100):
+    def PCA(self):
         '''
         Calculate principal components using spectral decomposition. Second
         component will always be the dispersion axis. First component will
         always be the general "trend" in the data.
         '''
-        # design matrix is simply x and y data
-        self.Z = array([self.x,self.y]).T
-        # find and subtract data means
-        self.Zbar = nanmean(self.Z,axis=0)
-        self.Z -= self.Zbar
         # spectral decomposition to get eigenvalues and eigenvectors
         lam,e = eig(self.Z.T @ self.Z)
         # take only real values of eigenvalues
@@ -93,18 +104,21 @@ class towrecen(object):
         # store all principal components
         self.pc = array([self.e[i].T @ self.Z.T for i in range(len(self.lam))])
         self.pd = -self.pc[1]
-        # total least squares slope
+        # total least squares
         self.SlopeTLS = (e[:-1,0]/e[-1,0])[0]
+        if sign(self.SlopeTLS) != sign(self.SlopeDemming):
+            self.SlopeTLS *= -1
+        self.InterTLS = self.Zbar[1]-self.SlopeTLS*self.Zbar[0]
         # uncertainties, if provided
         if any(self.xe==None) and not any(self.ye==None):
-            xSamp = array(nSamp*[self.x])
-            ySamp = randn(nSamp,len(self.y))*self.ye+self.y
+            xSamp = array(self.nSamp*[self.x])
+            ySamp = randn(self.nSamp,len(self.y))*self.ye+self.y
             pdSamp = array(list(map(lambda xSi,ySi:
                         -self.e[1].T @ array([xSi,ySi]),xSamp,ySamp)))
             self.pdErr = diff(quantile(pdSamp,[0.1587,0.5,0.8413],axis=0),axis=0)
         elif not any(self.xe==None) and not any(self.ye==None):
-            xSamp = randn(nSamp,len(self.x))*self.xe+self.x
-            ySamp = randn(nSamp,len(self.y))*self.ye+self.y
+            xSamp = randn(self.nSamp,len(self.x))*self.xe+self.x
+            ySamp = randn(self.nSamp,len(self.y))*self.ye+self.y
             pdSamp = array(list(map(lambda xSi,ySi:
                         -self.e[1].T @ array([xSi,ySi]),xSamp,ySamp)))
             self.pdErr = diff(quantile(pdSamp,[0.1587,0.5,0.8413],axis=0),axis=0)
@@ -112,7 +126,7 @@ class towrecen(object):
             self.pdErr = zeros((2,len(self.pd)))
 
 
-    def OrthoDist(self,verbose=False,nSamp=100):
+    def OrthoDist(self,verbose=False):
         '''
         Calculate Euclidean orthogonal distances between data and function
         '''
@@ -132,8 +146,8 @@ class towrecen(object):
             print(f'\n    root-finding limits\n'+32*'-'+f'\nx_min : {xmin:.3f}, x_max : {xmax:.3f}')
         # uncertainties, if provided
         if any(self.xe==None) and not any(self.ye==None):
-            xSamp = array(nSamp*[self.x])
-            ySamp = randn(nSamp,len(self.y))*self.ye+self.y
+            xSamp = array(self.nSamp*[self.x])
+            ySamp = randn(self.nSamp,len(self.y))*self.ye+self.y
             x0Samp = array(list(map(lambda xSi,ySi: list(map(
                         lambda xi,yi: fminbound(dfun,xmin,xmax,args=(xi,yi)),\
                         xSi,ySi)),xSamp,ySamp)))
@@ -141,8 +155,8 @@ class towrecen(object):
             odSamp = dfun(x0Samp,xSamp,ySamp)*sign(ySamp-y0Samp)
             self.odErr = diff(quantile(odSamp,[0.1587,0.5,0.8413],axis=0),axis=0)
         elif not any(self.xe==None) and not any(self.ye==None):
-            xSamp = randn(nSamp,len(self.x))*self.xe+self.x
-            ySamp = randn(nSamp,len(self.y))*self.ye+self.y
+            xSamp = randn(self.nSamp,len(self.x))*self.xe+self.x
+            ySamp = randn(self.nSamp,len(self.y))*self.ye+self.y
             x0Samp = array(list(map(lambda xSi,ySi: list(map(
                         lambda xi,yi: fminbound(dfun,xmin,xmax,args=(xi,yi)),\
                         xSi,ySi)),xSamp,ySamp)))
@@ -196,13 +210,22 @@ class towrecen(object):
         self.DCY = self.IDC+self.SDC*self.pd
         self.DCX = self.pd + (self.od-self.DCY)*self.SDC/(self.SDC**2+1)
         self.DemmingCompare = lambda x0: self.SDC*x0+self.IDC
-        print(f'Ratio of Orthogonal Distance to PCA Distance : {self.SDC:.3f}')
+        #print(f'Ratio of Orthogonal Distance to PCA Distance : {self.SDC:.3f}')
 
     def pprint(self):
         head = '   PCA '+len(f'{self.pd[0]: >6.3f}')*' '+'Ortho   '
         print(len(head)*'-'+'\n'+head+'\n'+len(head)*'-')
         for i in range(len(self.x)):
             print(f'  {self.pd[i]: >6.3f}    {self.od[i]: >6.3f}  ')
+
+    def printRegress(self):
+        head = '    METHOD    SLOPE    INTER    '
+        print(len(head)*'-'+'\n'+head+'\n'+len(head)*'-')
+        method = ['Wgt LstSq','Tot LstSq','Demming']
+        slopes = [self.SlopeWLS,self.SlopeTLS,self.SlopeDemming]
+        inters = [self.InterWLS,self.InterTLS,self.InterDemming]
+        for l,m,b in zip(method,slopes,inters):
+            print(f'{l: >10s}    {m:.3f}    {b:.3f}')
 
     def plotDistCompare(self,verbose=False):
 
@@ -215,15 +238,15 @@ class towrecen(object):
                         markerfacecolor='#fdca40',label='distances')
         #ax[1,0].scatter(self.pd,self.od,c='#fdca40',zorder=1)
         ax[1,0].set_xlabel('PCA')
-        ax[1,0].set_ylabel('Euclid')
-        ax[1,0].set_xlim(1.1*min(self.pd),1.1*max(self.pd))
-        ax[1,0].set_ylim(1.1*min(self.od),1.1*max(self.od))
+        ax[1,0].set_ylabel('Ortho Euclid')
+        ax[1,0].set_xlim(1.1*min([self.pd,self.od]),1.1*max([self.pd,self.od]))
+        ax[1,0].set_ylim(1.1*min([self.pd,self.od]),1.1*max([self.pd,self.od]))
         ax[1,1].hist(self.od,histtype='stepfilled',facecolor='none',edgecolor='k')
-        ax[1,1].set_xlim(1.1*min(self.od),1.1*max(self.od))
+        ax[1,1].set_xlim(1.1*min([self.pd,self.od]),1.1*max([self.pd,self.od]))
         ax[1,1].set_yticks([])
-        ax[1,1].set_xlabel('Euclid')
+        ax[1,1].set_xlabel('Ortho Euclid')
         ax[0,0].hist(self.pd,histtype='stepfilled',facecolor='none',edgecolor='k')
-        ax[0,0].set_xlim(1.1*min(self.pd),1.1*max(self.pd))
+        ax[0,0].set_xlim(1.1*min([self.pd,self.od]),1.1*max([self.pd,self.od]))
         ax[0,0].set_xticklabels([])
         ax[0,0].set_yticks([])
         ax[0,1].axis('off')
@@ -241,11 +264,13 @@ class towrecen(object):
 
         tmp = linspace(min([self.x.min(),self.x0.min()]),\
                        max([self.x.max(),self.x0.max()]),101)
+
+        plt.plot(tmp,self.Demming(tmp),color='#cb1f1f',label='Demming')
+        plt.plot(tmp,self.SlopeWLS*tmp+self.InterWLS,color='#fdca40',label='Weighted LstSq')
+        plt.plot(tmp,self.SlopeTLS*tmp+self.InterTLS,color='#2c755f',label='Total LstSq')
         if self.usrfun:
             plt.plot(tmp,self.fun(tmp),color="#64008f",label='user func')
-        plt.plot(tmp,self.Demming(tmp),color='#cb1f1f',label='Demming regression')
-        plt.plot(tmp,self.SlopeTLS*(tmp-self.Zbar[0])+self.Zbar[1],color='#2c755f',label='Total Least Squares')
-        plt.scatter(self.DemmingX, self.DemmingY,zorder=5,marker='s',s=5,c='#219fff',label=r'Demming data')
+        #plt.scatter(self.DemmingX, self.DemmingY,zorder=5,marker='s',s=5,c='#219fff',label=r'Demming data')
         plt.scatter(self.x, self.y,c='#d97b08',zorder=6,label='data')
         plt.legend()
         plt.show()
@@ -264,7 +289,8 @@ class towrecen(object):
 
         for i in range(len(self.x)):
         	plt.plot([self.x[i],self.x0[i]],[self.y[i],self.fun(self.x0[i])],color='0.6',zorder=1)
-        plt.scatter(self.x, self.y, c=self.od, cmap='seismic',vmin=-1,vmax=1,ec='k',lw=1,zorder=2)
+        plt.scatter(self.x, self.y, c=self.od/self.od.std(), \
+                    cmap='seismic',vmin=-3,vmax=3,ec='k',lw=1,zorder=2)
 
         plt.show()
 
@@ -272,10 +298,11 @@ class towrecen(object):
 
         tmp = linspace(min([self.x.min(),self.x0.min()]),\
                        max([self.x.max(),self.x0.max()]),101)
-        plt.plot(tmp,self.SlopeTLS*(tmp-self.x.mean())+self.y.mean())
+        plt.plot(tmp,self.SlopeTLS*tmp+self.InterTLS)
         for i in range(len(self.x)):
-            x0 = (self.y[i]-self.Zbar[1])/self.SlopeTLS + self.Zbar[0]
-            y0 = self.SlopeTLS*(self.x[i]-self.Zbar[0])+self.Zbar[1]
+            x0 = (self.y[i]-self.InterTLS)/self.SlopeTLS
+            #(self.y[i]-self.Zbar[1])/self.SlopeTLS + self.Zbar[0]
+            y0 = self.SlopeTLS*self.x[i]+self.InterTLS
             plt.plot([self.x[i],(x0+self.x[i])/2],[self.y[i],(y0+self.y[i])/2],color='0.6',zorder=1)
         kwargs = dict(ls='none',lw=1,color='k')
         if any(self.xe==None) and not any(self.ye==None):
@@ -283,5 +310,6 @@ class towrecen(object):
         elif not any(self.xe==None) and not any(self.ye==None):
             plt.errorbar(self.x,self.y,xerr=self.xe,yerr=self.ye,**kwargs)
 
-        plt.scatter(self.x, self.y, c=self.pd, cmap='seismic',vmin=-1,vmax=1,ec='k',lw=1,zorder=2)
+        plt.scatter(self.x, self.y, c=self.pd/self.pd.std(), \
+                    cmap='seismic',vmin=-3,vmax=3,ec='k',lw=1,zorder=2)
         plt.show()
