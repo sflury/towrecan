@@ -1,0 +1,20 @@
+[project]
+name = "towrecen"
+version = "0.0.1"
+authors = [{name = "Sophia Flury", email = "sflury@umass.edu"}]
+description = "Quantify dispersion in data using various methods"
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = ["Programming Language :: Python :: 3",
+               "Programming Language :: Python :: 3.7",
+               "License :: OSI Approved :: GPL-3.0 license",
+               "Operating System :: OS Independent",
+]
+dependencies = ["matplotlib>=3.7.1",
+                "numpy==1.24.3",
+                "scipy>=1.10.1"; python_version >= '3.7']
+license = {file = "LICENSE", text = "GPL-3.0 license"}
+[project.urls]
+Homepage      = "https://github.com/sflury/towrecen"
+Issues        = "https://github.com/sflury/towrecen/issues"
+Documentation = "https://github.com/sflury/towrecen/wiki"
