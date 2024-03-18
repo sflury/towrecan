@@ -2,9 +2,10 @@
 The towrecen code characterizes the scatter in data by quantifying the dispersion with respect to some fiducial value. There are two possible approaches which `towrecen` implements:
 + determine the (signed) minimal orthogonal distance between each datum and some reference function
 + determine the orthogonal distance which maximizes the variance with respect to the mean or median of the data
-The former involves root-finding to determine _where_ a function gets minimized. This approach is inherently model-dependent. The latter lends itself naturally to principal component analysis (PCA -- perhaps a foregone conclusion for the stats-oriented folks). This approach is model-independent. There are pros and cons to each approach, and it is up to the user to determine which method is more insightful/meaningful given their data.
 
-In the case of the explicity orthogonal distance method, if no model is provided, `towrecen` will produce a model by performing a simple matrix-algebra linear least squares fit. PCA can also optionally take a model instead of using its non-parametric approach of mean subtraction; however, this is not recommended.
+The former involves root-finding to determine _where_ a function gets minimized. This approach is inherently model-dependent. The latter lends itself naturally to principal component analysis (PCA -- perhaps a foregone conclusion for the stats-oriented folks). This approach is model-independent. There are pros and cons to each approach, and it is up to the user to determine which method is more insightful/meaningful given their data and objectives.
+
+In the case of the explicity orthogonal distance method, if no model is provided, `towrecen` will produce a model by performing a Demming regression fit, which assumes a simle first-order polynomial and accounts for scatter and uncertainty in both the abscissa (independent) and ordinate (dependent) variables. PCA implicitly contains a similar "fit" when reprojecting the data via spectral decomposition. The best-"fit" coefficients are contained in the eigenvectors of the covariance matrix of the dependent and independent variables. This PCA "fit" is equivalent to total least squares and is often similar (but not the same) as Demming regression.
 
 ## Example Usage
 ``` python
