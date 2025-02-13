@@ -12,7 +12,6 @@ In the case of the explicity orthogonal distance method, if no model is provided
 from numpy.random import rand, randn, seed
 from towrecen import *
 seed(123)
-import sys,os
 # function for orthogonal distance
 # here using Nicholls+ 2017
 f = lambda x: log10(10**-1.732+10**((x-12)+2.19))
