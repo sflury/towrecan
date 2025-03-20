@@ -38,20 +38,21 @@ disp.plotDistCompare()
 I studied Old, Middle, and Early Modern English in college, both from a linguistic angle and from a literary one. I wanted to reconnect to those scholastic roots. The name `towrecan` is an Old English word meaning 'to scatter' or 'to disperse'. The word contains connotations of sowing fields. I often picture data as having been scattered in such a way, with the Universe casting galactic seeds to be nurtured through gas accretion and the subtle laws of physics. Ours is to determine whether the dispersion is physical (like the mass-metallicity relation) and if so, why.
 
 ## Citing `towrecan`
-The `towrecan` code has its origins in my Master's thesis; however, it first appeared "publicly" in the publication below. As of now, please cite this paper repository when utilizing `towrecan`. Future work will present details of this code with application to an astrophysical context.
+The `towrecan` code has its origins in my Master's thesis; however, it will first appear "publicly" in the near future. As of now, please cite this paper repository when utilizing `towrecan`. Future work will present details of this code with application to an astrophysical context.
 
 ``` bibtex
-@ARTICLE{AuthorYear,
-       author = {{Flury}, Sophia R. and ??},
-        title = "{}",
-      journal = {},
+@SOFTWARE{Flury2025,
+       author = {{Flury}, Sophia R.?},
+        title = "{towrecan: Quantifying Dispersion in Data}",
          year = 2025,
-        month = ,
-       volume = {},
-       number = {},
-        pages = {},
-          doi = {} }
+        month = march,
+      version = {1.0.1},
+          url = {https://github.com/sflury/towrecan},
+          doi = {10.5281/zenodo.15057953} }
 ```
+
+Zenodo badge:
+[![DOI](https://zenodo.org/badge/767437829.svg)](https://doi.org/10.5281/zenodo.15057953)
 
 ## Licensing
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
