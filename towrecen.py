@@ -6,10 +6,10 @@ from scipy.optimize import fminbound, newton
 import matplotlib.pyplot as plt
 plt.ioff()
 
-class towrecen(object):
+class towrecan(object):
     '''
     Name:
-        towrecen
+        towrecan
 
     Purpose:
         Quantify the dispersion of a bivariate data set
@@ -129,7 +129,7 @@ class towrecen(object):
             `y` or `x` and `y` are provided, uncertainties in the PCA dispersion
             are propagated by Monte Carlo simulation. Optional sigma clipping
             is permitted if indices are passed by the user or by an upper level
-            call within `towrecen`.
+            call within `towrecan`.
         '''
         # if no subsets, then select all data
         if any(inds==None):
