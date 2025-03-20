@@ -35,7 +35,7 @@ disp.plotDistCompare()
 <img width="400" alt="image" src="https://github.com/sflury/towrecan/assets/42982705/14677bf2-8064-4984-aee0-defbc1254887">
 
 ## Whence the Name `towrecan`
-I studied Old, Middle, and Early Modern English in college, both from a linguistic angle and from a literary one. I wanted to reconnect to those scholastic roots. The name `towrecan` is an Old English word meaning 'to scatter' or 'to disperse'. The word contains connotations of sowing fields. I often picture data as having been scattered in such a way, with the Universe casting galactic seeds to be nurtured through gas accretion and the subtle laws of physics. Ours is to determine whether the dispersion is physical (like the mass-metallicity relation) and if so, why.
+I studied Old, Middle, and Early Modern English in college, both from a linguistic angle and from a literary one. I wanted to reconnect to those scholastic roots. The name `towrecan` is an Old English word meaning 'to scatter', 'to disperse', or 'to drive asunder'. The word contains connotations of a driving force or vengeance. I picture extreme phenomena like supernovae or active galactic nuclei actively causing unique observable conditions through brute force, shaping the scaling relations of galaxies. Ultimately ours is to determine whether the dispersion we see in our data is physical (like the mass-metallicity relation) and if so, why.
 
 ## Citing `towrecan`
 The `towrecan` code has its origins in my Master's thesis; however, it will first appear "publicly" in the near future. As of now, please cite this paper repository when utilizing `towrecan`. Future work will present details of this code with application to an astrophysical context.
