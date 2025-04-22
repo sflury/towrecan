@@ -38,7 +38,7 @@ disp.plotDistCompare()
 I studied Old, Middle, and Early Modern English in college, both from a linguistic angle and from a literary one. I wanted to reconnect to those scholastic roots. The name `towrecan` is an Old English word meaning 'to scatter', 'to disperse', or 'to drive asunder'. The word contains connotations of a driving force (think of the word 'wreck', which has its origins in 'towrecan'). I picture extreme phenomena like supernovae or active galactic nuclei actively causing unique observable conditions through brute force, wrecking the status quo of their galaxies and shaping the scaling relations we observe today. Ultimately ours is to determine whether the dispersion we see in our data is physical (like the mass-metallicity relation) and if so, why.
 
 ## Citing `towrecan`
-The `towrecan` code has its origins in my Master's thesis; however, it will first appear "publicly" in the near future. As of now, please cite this paper repository when utilizing `towrecan`. Future work will present details of this code with application to an astrophysical context.
+The `towrecan` code has its origins in my Master's thesis; however, it will first appear "publicly" in the near future. As of now, please cite this repository when utilizing `towrecan`. Future work will present details of this code with application to an astrophysical context.
 
 ``` bibtex
 @SOFTWARE{Flury2025,
