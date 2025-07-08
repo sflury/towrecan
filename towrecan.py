@@ -36,15 +36,15 @@ class towrecan(object):
 
     Attributes:
         :pc (*np.ndarray*): Each of the principal components of `x` and `y`
-        :pd (*np.ndarray*): Orthogonal distance according to PCA (model
+        :dispPCA (*np.ndarray*): Orthogonal distance according to PCA (model
             independent, but boils down to a linear relation sans intercept)
-        :pdErr (*np.ndarray*): 2xN array for the lower, upper uncertainties in
+        :dispPCAerr (*np.ndarray*): 2xN array for the lower, upper uncertainties in
             the PCA orthogonal distances
         :x0 (*np.ndarray*): Location along `fun` which minimizes the distance
             between `x`, `y` and `x0`, `fun(x0)`
-        :od (*np.ndarray*): Euclidean distances of `x` and `y` from `x0` and
+        :dispMED (*np.ndarray*): Euclidean distances of `x` and `y` from `x0` and
             `fun(x0)`
-        :odErr (*np.ndarray*): 2xN array for the lower, upper uncertainties in
+        :dispMEDerr (*np.ndarray*): 2xN array for the lower, upper uncertainties in
             the Euclidean orthogonal distances
         :SlopeDemming (*float*): slope determined using Demming regression
         :InterDemming (*float*): intercept determined using Demming regression
@@ -64,7 +64,7 @@ class towrecan(object):
     Methods:
         :Demming: predicts a dependent variable from a given independent
             variable after training on `x` and `y`
-        :plotDistCompare: plots the minimum Euclidean distance between the data
+        :plotDispCompare: plots the minimum Euclidean distance between the data
             and `fun` versus the PCA dispersion axis (second principal
             component), along with a Demming regression on the computed
             distances to quantify any differences between the two metrics
