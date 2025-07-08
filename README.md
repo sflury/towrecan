@@ -24,7 +24,7 @@ ye = 0.05*rand(len(x))+0.05
 disp = towrecan(x,y,fun=f,xerr=xe,yerr=ye)
 # plot data to illustrate scatter and
 # minimized Euclidean distances
-disp.plotDistOrtho()
+disp.plotDispMED()
 ```
 <img width="400" alt="image" src="https://github.com/sflury/towrecan/assets/42982705/aeb72b15-0956-48ed-8fc8-83e258bf23f0">
 
